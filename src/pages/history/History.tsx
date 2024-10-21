@@ -23,7 +23,7 @@ async function getSbchLockRecords(makers: MarketMaker[], account: string, bchAcc
     // get events from sbch
     const atomicSwapEther = await getAtomicSwapEther()
     const lockFilter = atomicSwapEther.filters.Lock(account);
-    const lockEvents = await atomicSwapEther.queryFilter(lockFilter, -34560, "latest")
+    const lockEvents = await atomicSwapEther.queryFilter(lockFilter, -(34560 * 5), "latest")
     let recordsOnChain: SwapRecord[] = []
     lockEvents.forEach(({ args, transactionHash }: any) => {
         const maker = makers.find(x => x.addr === args._receiver)!
@@ -52,7 +52,7 @@ async function getBchLockRecords(makers: MarketMaker[], account: string, bchAcco
     // get events from bch
     const wallet = await getWalletClass().fromCashaddr(bchAccount)
     let [latestBlockHeight, txs] = await Promise.all([wallet.provider.getBlockHeight(), wallet.getRawHistory()])
-    txs = txs.filter(v => v.height > (latestBlockHeight - 288))
+    txs = txs.filter(v => v.height > (latestBlockHeight - (288 * 8)))
     const txInfos = await Promise.all(txs.map(tx => wallet.provider.getRawTransactionObject(tx.tx_hash)))
     let recordsOnChain: SwapRecord[] = []
     txInfos.forEach(v => {
