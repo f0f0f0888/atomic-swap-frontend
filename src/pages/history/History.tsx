@@ -52,7 +52,7 @@ async function getBchLockRecords(makers: MarketMaker[], account: string, bchAcco
     // get events from bch
     const wallet = await getWalletClass().fromCashaddr(bchAccount)
     let [latestBlockHeight, txs] = await Promise.all([wallet.provider.getBlockHeight(), wallet.getRawHistory()])
-    txs = txs.filter(v => v.height > (latestBlockHeight - (288 * 8)))
+    txs = txs.filter(v => v.height > (latestBlockHeight - (288 * 5)))
     const txInfos = await Promise.all(txs.map(tx => wallet.provider.getRawTransactionObject(tx.tx_hash)))
     let recordsOnChain: SwapRecord[] = []
     txInfos.forEach(v => {
